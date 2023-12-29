@@ -1,0 +1,88 @@
+class Item:
+    def __init__(self, name, code, price, stock, category):
+        self.name = name  # Initialize the name attribute of the Item class
+        self.code = code  # Initialize the code attribute of the Item class
+        self.price = price  # Initialize the price attribute of the Item class
+        self.stock = stock  # Initialize the stock attribute of the Item class
+        self.category = category  # Initialize the category attribute of the Item class
+
+class Category:
+    def __init__(self, name, items):
+        self.name = name  # Initialize the name attribute of the Category class
+        self.items = items  # Initialize the items attribute of the Category class
+
+def print_menu(categories):
+    print("Welcome to Aisha's Vending Machine")  # Print a welcome message
+    print("=" * 90)  # Print a line of equal signs
+    for category in categories:  # Iterate over each category in the categories list
+        print("Category: " + category.name)  # Print the name of the current category
+        for item in category.items:  # Iterate over each item in the current category
+            print(f"Item name: {item.name} | Code: {item.code} | Price: ${item.price} | Stock: {item.stock}")  # Print the details of the current item
+        print("=" * 90)  # Print a line of equal signs
+
+def get_item_by_code(categories, code):
+    for category in categories:  # Iterate over each category in the categories list
+        for item in category.items:  # Iterate over each item in the current category
+            if item.code == code:  # Check if the current item's code matches the given code
+                return item  # Return the current item if it matches the given code
+    return None  # Return None if no item matches the given code
+
+def dispense_item(item):
+    print(f"Dispensing {item.name}...")  # Print a message indicating that the item is being dispensed
+    item.stock -= 1  # Decrement the stock of the item by 1
+
+def calculate_change(price, amount_paid):
+    change = amount_paid - price  # Calculate the difference between the amount paid and the price
+    return round(change, 2)  # Round the change to 2 decimal places and return it
+
+# Define items
+chocolates = [Item("Snicker's bar", "A1", 2.95, 10, "Chocolates"), Item("KitKat bar", "A2", 1.95, 5, "Chocolates"), Item("M&ms", "A3", 3.25, 2, "Chocolates")]
+soft_drinks = [Item("Coca Cola", "B1", 1.50, 10, "Soft Drinks"), Item("Pepsi", "B2", 1.50, 8, "Soft Drinks"), Item("Sprite", "B3", 1.50, 6, "Soft Drinks")]
+snacks = [Item("Lays", "C1", 1.00, 15, "Chips"), Item("Doritos", "C2", 1.00, 10, "Chips"), Item("Cheetos", "C3", 1.00, 5, "Chips")]
+hot_drinks = [Item("Coffee", "D1", 2.00, 20, "Hot Drinks"), Item("Tea", "D2", 1.50, 20, "Hot Drinks"), Item("Hot Chocolate", "D3", 2.50, 15, "Hot Drinks")]
+noodles = [Item("Ramen", "E1", 3.00, 10, "Noodles"), Item("Udon", "E2", 3.50, 8, "Noodles"), Item("Soba", "E3", 3.50, 6, "Noodles")]
+
+# Define categories
+categories = [Category("Chocolates", chocolates), Category("Soft Drinks", soft_drinks), Category("Snacks", snacks), Category("Hot Drinks", hot_drinks), Category("Noodles", noodles)]
+
+# Print menu
+print_menu(categories)
+
+# Get user input
+code = input("Enter the code of the item you want: ")
+item = get_item_by_code(categories, code)
+
+if item is None:
+    print("Invalid code. Please try again.")
+else:
+    price = item.price  # Get the price of the selected item
+    amount_paid = float(input(f"Enter {price} dollars to purchase: "))  # Get the amount paid by the user
+    if amount_paid < price:
+        print("Insufficient funds. Please try again.")
+    else:
+        change = calculate_change(price, amount_paid)  # Calculate the change to be returned
+        dispense_item(item)  # Dispense the item to the user
+        print(f"Thank you for your purchase! You have received {change} dollars in change.")
+
+        # Allow user to buy additional items
+        while True:
+            query = input("Would you like to buy another item? (y/n): ")
+            if query.lower() == "y":
+                print_menu(categories)  # Print the menu again
+                code = input("Enter the code of the item you want: ")
+                item = get_item_by_code(categories, code)
+                if item is None:
+                    print("Invalid code. Please try again.")
+                else:
+                    price = item.price  # Get the price of the selected item
+                    amount_paid = float(input(f"Enter {price} dollars to purchase: "))  # Get the amount paid by the user
+                    if amount_paid < price:
+                        print("Insufficient funds. Please try again.")
+                    else:
+                        change = calculate_change(price, amount_paid)  # Calculate the change to be returned
+                        dispense_item(item)  # Dispense the item to the user
+                        print(f"Thank you for your purchase! You have received {change} dollars in change.")
+            elif query.lower() == "n":
+                break
+            else:
+                print("Invalid input. Please try again.")
